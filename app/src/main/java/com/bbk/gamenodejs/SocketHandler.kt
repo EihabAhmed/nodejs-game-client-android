@@ -83,7 +83,8 @@ class SocketHandler {
     }
 
     companion object {
-        private const val SOCKET_URL = "http://192.168.1.7:3000/"
+        private const val SOCKET_URL = "https://game-node-js-5412cbf208fc.herokuapp.com"
+//        private const val SOCKET_URL = "http://192.168.1.7:3000/"
 //        private const val SOCKET_URL = "http://localhost:3000/"
     }
 }
