@@ -56,6 +56,26 @@ class GameActivity : AppCompatActivity() {
                     binding.otherPlayerTextView.text = incomingData.username
                     binding.otherPlayerScoreTextView.text = incomingData.score.toString()
                 }
+
+                binding.selfPlayerTextView.setTextColor(resources.getColor(R.color.black))
+                binding.selfPlayerScoreTextView.setTextColor(resources.getColor(R.color.black))
+                binding.otherPlayerTextView.setTextColor(resources.getColor(R.color.black))
+                binding.otherPlayerScoreTextView.setTextColor(resources.getColor(R.color.black))
+            }
+
+            socketHandler.onNewScore2.observe(this) { incomingData ->
+
+                if (incomingData.username == userName) {
+                    binding.selfPlayerScoreTextView.text = incomingData.score.toString()
+                } else {
+                    binding.otherPlayerTextView.text = incomingData.username
+                    binding.otherPlayerScoreTextView.text = incomingData.score.toString()
+                }
+
+                binding.selfPlayerTextView.setTextColor(resources.getColor(R.color.purple_700))
+                binding.selfPlayerScoreTextView.setTextColor(resources.getColor(R.color.purple_700))
+                binding.otherPlayerTextView.setTextColor(resources.getColor(R.color.purple_700))
+                binding.otherPlayerScoreTextView.setTextColor(resources.getColor(R.color.purple_700))
             }
         }
     }

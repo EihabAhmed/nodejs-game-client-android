@@ -13,7 +13,9 @@ class SocketHandler {
     private var socket: Socket? = null
 
     private val _onNewScore = MutableLiveData<Score>()
+    private val _onNewScore2 = MutableLiveData<Score>()
     val onNewScore: LiveData<Score> get() = _onNewScore
+    val onNewScore2: LiveData<Score> get() = _onNewScore2
 
     init {
         try {
@@ -21,6 +23,7 @@ class SocketHandler {
             socket?.connect()
 
             registerOnNewScore()
+            registerOnNewScore2()
         } catch (e: URISyntaxException) {
             e.printStackTrace()
         }
@@ -39,7 +42,9 @@ class SocketHandler {
                 }
             }
         }
+    }
 
+    private fun registerOnNewScore2() {
         socket?.on(SCORE_KEYS.BROADCAST2) { args ->
             args?.let { d ->
                 if (d.isNotEmpty()) {
@@ -47,7 +52,7 @@ class SocketHandler {
                     Log.d("DATADEBUG2", "$data")
                     if (data.toString().isNotEmpty()) {
                         val score = Gson().fromJson(data.toString(), Score::class.java)
-                        _onNewScore.postValue(score)
+                        _onNewScore2.postValue(score)
                     }
                 }
             }
