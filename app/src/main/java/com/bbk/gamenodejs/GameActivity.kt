@@ -38,6 +38,16 @@ class GameActivity : AppCompatActivity() {
                 socketHandler.emitScore(score)
             }
 
+            binding.score2Button.setOnClickListener {
+                myScore += 2
+
+                val score = Score(
+                    username = userName,
+                    score = myScore
+                )
+                socketHandler.emitScore2(score)
+            }
+
             socketHandler.onNewScore.observe(this) { incomingData ->
 
                 if (incomingData.username == userName) {

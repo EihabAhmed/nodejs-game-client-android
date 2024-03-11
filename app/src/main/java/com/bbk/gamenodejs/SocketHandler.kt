@@ -39,6 +39,19 @@ class SocketHandler {
                 }
             }
         }
+
+        socket?.on(SCORE_KEYS.BROADCAST2) { args ->
+            args?.let { d ->
+                if (d.isNotEmpty()) {
+                    val data = d[0]
+                    Log.d("DATADEBUG2", "$data")
+                    if (data.toString().isNotEmpty()) {
+                        val score = Gson().fromJson(data.toString(), Score::class.java)
+                        _onNewScore.postValue(score)
+                    }
+                }
+            }
+        }
     }
 
     fun disconnectSocket() {
@@ -51,9 +64,17 @@ class SocketHandler {
         socket?.emit(SCORE_KEYS.NEW_MESSAGE, jsonStr)
     }
 
+    fun emitScore2(score: Score) {
+        val jsonStr = Gson().toJson(score, Score::class.java)
+        socket?.emit(SCORE_KEYS.NEW_MESSAGE2, jsonStr)
+    }
+
     private object SCORE_KEYS {
         const val NEW_MESSAGE = "new_message"
         const val BROADCAST = "broadcast"
+
+        const val NEW_MESSAGE2 = "new_message2"
+        const val BROADCAST2 = "broadcast2"
     }
 
     companion object {
