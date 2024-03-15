@@ -66,12 +66,16 @@ class SocketHandler {
 
     fun emitScore(score: Score) {
         val jsonStr = Gson().toJson(score, Score::class.java)
-        socket?.emit(SCORE_KEYS.NEW_MESSAGE, jsonStr)
+        for (i in 0 until 3) {
+            socket?.emit(SCORE_KEYS.NEW_MESSAGE, jsonStr)
+        }
     }
 
     fun emitScore2(score: Score) {
         val jsonStr = Gson().toJson(score, Score::class.java)
-        socket?.emit(SCORE_KEYS.NEW_MESSAGE2, jsonStr)
+        for (i in 0 until 3) {
+            socket?.emit(SCORE_KEYS.NEW_MESSAGE2, jsonStr)
+        }
     }
 
     private object SCORE_KEYS {
