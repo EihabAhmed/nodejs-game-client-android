@@ -77,6 +77,15 @@ class GameActivity : AppCompatActivity() {
                 binding.otherPlayerTextView.setTextColor(resources.getColor(R.color.purple_700))
                 binding.otherPlayerScoreTextView.setTextColor(resources.getColor(R.color.purple_700))
             }
+
+            socketHandler.onLedStatus.observe(this) { incomingData ->
+
+                if (incomingData.ledOff) {
+                    binding.ledStatusTextView.text = "LED Off"
+                } else {
+                    binding.ledStatusTextView.text = "LED On"
+                }
+            }
         }
     }
 

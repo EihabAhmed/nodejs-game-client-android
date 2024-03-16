@@ -14,8 +14,11 @@ class SocketHandler {
 
     private val _onNewScore = MutableLiveData<Score>()
     private val _onNewScore2 = MutableLiveData<Score>()
+    private val _onLedStatus = MutableLiveData<LedStatus>()
+
     val onNewScore: LiveData<Score> get() = _onNewScore
     val onNewScore2: LiveData<Score> get() = _onNewScore2
+    val onLedStatus: LiveData<LedStatus> get() = _onLedStatus
 
     init {
         try {
@@ -24,13 +27,14 @@ class SocketHandler {
 
             registerOnNewScore()
             registerOnNewScore2()
+            registerOnLedStatus()
         } catch (e: URISyntaxException) {
             e.printStackTrace()
         }
     }
 
     private fun registerOnNewScore() {
-        socket?.on(SCORE_KEYS.BROADCAST) { args ->
+        socket?.on(MESSAGE_KEYS.BROADCAST) { args ->
             args?.let { d ->
                 if (d.isNotEmpty()) {
                     val data = d[0]
@@ -45,7 +49,7 @@ class SocketHandler {
     }
 
     private fun registerOnNewScore2() {
-        socket?.on(SCORE_KEYS.BROADCAST2) { args ->
+        socket?.on(MESSAGE_KEYS.BROADCAST2) { args ->
             args?.let { d ->
                 if (d.isNotEmpty()) {
                     val data = d[0]
@@ -59,6 +63,21 @@ class SocketHandler {
         }
     }
 
+    private fun registerOnLedStatus() {
+        socket?.on(MESSAGE_KEYS.LED_STATUS) { args ->
+            args?.let { d ->
+                if (d.isNotEmpty()) {
+                    val data = d[0]
+                    Log.d("DATADEBUG3", "$data")
+                    if (data.toString().isNotEmpty()) {
+                        val ledStatus = Gson().fromJson(data.toString(), LedStatus::class.java)
+                        _onLedStatus.postValue(ledStatus)
+                    }
+                }
+            }
+        }
+    }
+
     fun disconnectSocket() {
         socket?.disconnect()
         socket?.off()
@@ -66,24 +85,22 @@ class SocketHandler {
 
     fun emitScore(score: Score) {
         val jsonStr = Gson().toJson(score, Score::class.java)
-        for (i in 0 until 3) {
-            socket?.emit(SCORE_KEYS.NEW_MESSAGE, jsonStr)
-        }
+        socket?.emit(MESSAGE_KEYS.NEW_MESSAGE, jsonStr)
     }
 
     fun emitScore2(score: Score) {
         val jsonStr = Gson().toJson(score, Score::class.java)
-        for (i in 0 until 3) {
-            socket?.emit(SCORE_KEYS.NEW_MESSAGE2, jsonStr)
-        }
+        socket?.emit(MESSAGE_KEYS.NEW_MESSAGE2, jsonStr)
     }
 
-    private object SCORE_KEYS {
+    private object MESSAGE_KEYS {
         const val NEW_MESSAGE = "new_message"
         const val BROADCAST = "broadcast"
 
         const val NEW_MESSAGE2 = "new_message2"
         const val BROADCAST2 = "broadcast2"
+
+        const val LED_STATUS = "led_status"
     }
 
     companion object {
